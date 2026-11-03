@@ -1,0 +1,23 @@
+FSCAN Console (FSCAN 内网扫描台)
+Copyright (c) 2026 四月
+Author: 四月
+GitHub: https://github.com/mcsiyue
+
+This project is a GUI wrapper for fscan. It does not modify fscan's scanner
+code, fingerprints, or POC set. All scanning capability comes from fscan.
+
+Third-party component
+---------------------
+fscan
+  https://github.com/shadow1ng/fscan
+  Copyright (c) 2021 shadow1ng
+  MIT License
+  License text: third_party/fscan-LICENSE.txt
+
+The Windows release package may contain a copy of the fscan binary downloaded
+from the official fscan GitHub release. That binary is redistributed under the
+MIT License above; the wrapper code is licensed under the MIT License in
+LICENSE.
+
+If you fork or redistribute this project, keep this NOTICE, the wrapper LICENSE,
+and the fscan license text together with any bundled fscan binary.

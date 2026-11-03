@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="fscan-token" content="__FSCAN_TOKEN__">
+<title>FSCAN 内网扫描台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23070A0E'/%3E%3Cg fill='none' stroke='%23F7B84B' stroke-width='1.6'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Ccircle cx='16' cy='16' r='4.5'/%3E%3Cpath d='M16 16l6.4-6.4' stroke='%235AD8E6'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.6' fill='%23F7B84B'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><path d="M12 12l6.2-6.2"/><path d="M12 3v2M21 12h-2M12 21v-2M3 12h2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.7a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.7a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.3 9c.24.6.83 1 1.47 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.6v12.8L19 12z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="M16 16l4.4 4.4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="10" height="10" rx="2"/><path d="M15 9V6.5A1.5 1.5 0 0 0 13.5 5h-8A1.5 1.5 0 0 0 4 6.5v8A1.5 1.5 0 0 0 5.5 16H9"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4l2 2h8a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M6.5 7l.8 12.1A1.5 1.5 0 0 0 8.8 20.5h6.4a1.5 1.5 0 0 0 1.5-1.4L17.5 7"/><path d="M10 11v5M14 11v5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.5V12l3 1.8"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M7.5 9l3 3-3 3M13 15h4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5l7 2.6v5.2c0 4.4-2.9 7.4-7 9.2-4.1-1.8-7-4.8-7-9.2V6.1z"/><path d="M9 12l2 2 4-4.2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4.5V11h-6.3"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5"/><path d="M19 5l-8 8"/><path d="M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 20V9"/><path d="M7.5 13.5L12 9l4.5 4.5"/><path d="M5 5h14"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4h4"/><path d="M12 7.8V12l3 1.8"/></symbol>
+  <symbol id="i-command" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M7 9h4M7 12.5h7M7 16h5"/></symbol>
+  <symbol id="i-braces" viewBox="0 0 24 24"><path d="M9 4H7.6A1.6 1.6 0 0 0 6 5.6v3.1a1.9 1.9 0 0 1-1.9 1.9A1.9 1.9 0 0 1 6 12.5v3.1A1.6 1.6 0 0 0 7.6 17.2H9"/><path d="M15 4h1.4A1.6 1.6 0 0 1 18 5.6v3.1a1.9 1.9 0 0 0 1.9 1.9A1.9 1.9 0 0 0 18 12.5v3.1a1.6 1.6 0 0 1-1.6 1.6H15"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5.5 13.2H11L10.5 21 18.5 10.8H13z"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"><svg class="icon"><use href="#i-radar"/></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">FSCAN</span>
+        <span class="brand-sub">内网扫描台<span class="brand-ver" id="brandVersion">v2.2.2</span><a class="author-link" href="https://github.com/mcsiyue" target="_blank" rel="noreferrer" title="作者 四月 · GitHub">by 四月</a></span>
+      </span>
+    </div>
+
+    <nav class="nav" aria-label="主导航">
+      <button class="nav-item is-active" data-view="scan">扫描台</button>
+      <button class="nav-item" data-view="history">历史记录<span class="nav-badge" id="navHistoryBadge">0</span></button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="run-state" id="runState">
+        <span class="state-dot"></span>
+        <span id="stateText">待命</span>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+      <button class="icon-btn" id="btnSettings" title="设置" aria-label="设置"><svg class="icon"><use href="#i-gear"/></svg></button>
+    </div>
+  </header>
+
+  <main class="workspace" id="scanView">
+    <aside class="panel config">
+      <div class="panel-head config-head">
+        <div>
+          <span class="eyebrow">CONFIG</span>
+          <h2>扫描配置</h2>
+        </div>
+        <button class="text-btn" id="btnReset">重置</button>
+      </div>
+
+      <div class="config-scroll" id="configScroll">
+        <div class="presets" id="presets">
+          <button class="preset" data-preset="recon"><svg class="icon"><use href="#i-bolt"/></svg><b>快速侦察</b><small>常用端口 · 关爆破</small></button>
+          <button class="preset" data-preset="deep"><svg class="icon"><use href="#i-target"/></svg><b>深度扫描</b><small>全插件 · 默认参数</small></button>
+          <button class="preset" data-preset="alive"><svg class="icon"><use href="#i-radar"/></svg><b>仅存活</b><small>ICMP 快速探活</small></button>
+        </div>
+
+        <section class="group">
+          <div class="group-title"><span class="group-no">01</span>目标<span class="group-hint">必填</span></div>
+          <div class="field">
+            <textarea id="target" rows="3" spellcheck="false" placeholder="192.168.1.0/24&#10;10.0.0.5&#10;example.com"></textarea>
+            <div class="field-row">
+              <button class="chip-btn" id="btnImportTarget"><svg class="icon"><use href="#i-upload"/></svg>导入目标文件</button>
+              <span class="micro">IP / CIDR / 域名，URL 请单独填写</span>
+            </div>
+            <div class="file-chip" id="targetFileChip" hidden>
+              <svg class="icon"><use href="#i-command"/></svg>
+              <span id="targetFileName"></span>
+              <button class="chip-x" id="btnClearTargetFile" aria-label="移除文件">×</button>
+            </div>
+            <input type="file" id="targetFileInput" hidden accept=".txt,.csv,.list,text/plain">
+          </div>
+          <div class="field">
+            <label for="exclude">排除主机 <span class="micro">可选</span></label>
+            <input id="exclude" type="text" spellcheck="false" placeholder="192.168.1.1,192.168.1.10-20">
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title"><span class="group-no">02</span>端口与模式</div>
+          <div class="field">
+            <div class="seg" id="portPresets" role="group" aria-label="端口预设">
+              <button data-value="common" class="is-active">常用</button>
+              <button data-value="web">Web</button>
+              <button data-value="db">数据库</button>
+              <button data-value="service">服务</button>
+              <button data-value="all">全端口</button>
+              <button data-value="custom">自定义</button>
+            </div>
+            <input id="ports" type="text" spellcheck="false" placeholder="例如 22,80,443,8000-8100" disabled>
+            <p class="micro" id="portHint">内置 133 个高频端口，覆盖常见服务</p>
+          </div>
+          <div class="field">
+            <label for="mode">扫描模式</label>
+            <select id="mode">
+              <option value="all">全量扫描 · 存活 + 端口 + 服务 + 漏洞</option>
+              <option value="web">Web 探测 · webtitle / webpoc</option>
+              <option value="plugin">指定插件 · 只跑某个服务</option>
+              <option value="alive">仅存活 · ICMP 快速探活</option>
+            </select>
+            <input id="plugins" type="text" spellcheck="false" placeholder="插件名，例如 ssh,smb,rdp" hidden>
+          </div>
+          <div class="field toggles">
+            <label class="toggle"><span>弱口令爆破</span><input type="checkbox" id="brute" checked><i></i></label>
+            <label class="toggle"><span>POC 漏洞扫描</span><input type="checkbox" id="poc" checked><i></i></label>
+            <label class="toggle"><span>Redis 利用模块</span><input type="checkbox" id="redis" checked><i></i></label>
+            <label class="toggle"><span>跳过 Ping 探测</span><input type="checkbox" id="noPing"><i></i></label>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title"><span class="group-no">03</span>性能</div>
+          <div class="field">
+            <div class="range-row">
+              <label for="threads">端口并发</label>
+              <input class="num" id="threadsNum" type="number" min="1" max="5000" step="10" value="600">
+            </div>
+            <input class="range" id="threads" type="range" min="20" max="2000" step="20" value="600">
+          </div>
+          <div class="field grid-2">
+            <div>
+              <label for="timeout">端口超时（秒）</label>
+              <input class="num" id="timeout" type="number" min="1" max="30" value="3">
+            </div>
+            <div>
+              <label for="wt">Web 超时（秒）</label>
+              <input class="num" id="wt" type="number" min="1" max="60" value="5">
+            </div>
+            <div>
+              <label for="pocNum">POC 并发</label>
+              <input class="num" id="pocNum" type="number" min="1" max="200" value="20">
+            </div>
+            <div>
+              <label for="rate">限速（包/分钟）</label>
+              <input class="num" id="rate" type="number" min="0" max="100000" value="0">
+            </div>
+          </div>
+        </section>
+
+        <details class="group fold">
+          <summary class="group-title"><span class="group-no">04</span>认证与字典<svg class="icon fold-icon"><use href="#i-chevron"/></svg></summary>
+          <div class="field grid-2">
+            <div><label for="user">用户名</label><input id="user" type="text" spellcheck="false" placeholder="root"></div>
+            <div><label for="password">密码</label><input id="password" type="password" spellcheck="false" placeholder="可选"></div>
+            <div><label for="userFile">用户名字典</label><input id="userFile" type="text" spellcheck="false" placeholder="文件路径"></div>
+            <div><label for="passFile">密码字典</label><input id="passFile" type="text" spellcheck="false" placeholder="文件路径"></div>
+            <div><label for="hash">NTLM Hash</label><input id="hash" type="text" spellcheck="false" placeholder="SMB / WMI 碰撞"></div>
+            <div><label for="sshKey">SSH 私钥</label><input id="sshKey" type="text" spellcheck="false" placeholder="id_rsa 路径"></div>
+          </div>
+        </details>
+
+        <details class="group fold">
+          <summary class="group-title"><span class="group-no">05</span>网络与代理<svg class="icon fold-icon"><use href="#i-chevron"/></svg></summary>
+          <div class="field">
+            <label for="proxy">HTTP 代理</label>
+            <input id="proxy" type="text" spellcheck="false" placeholder="http://127.0.0.1:8080">
+          </div>
+          <div class="field">
+            <label for="socks5">SOCKS5 代理</label>
+            <input id="socks5" type="text" spellcheck="false" placeholder="127.0.0.1:1080 或 socks5://user:pass@host:port">
+          </div>
+          <div class="field">
+            <label for="iface">指定网卡 IP <span class="micro">VPN 场景</span></label>
+            <input id="iface" type="text" spellcheck="false" placeholder="10.8.0.5">
+          </div>
+        </details>
+
+        <details class="group fold">
+          <summary class="group-title"><span class="group-no">06</span>高级<svg class="icon fold-icon"><use href="#i-chevron"/></svg></summary>
+          <div class="field">
+            <label for="customArgs">附加参数</label>
+            <input id="customArgs" type="text" spellcheck="false" placeholder="例如 -nobr -retry 1 -debug">
+            <p class="micro">原样追加到 fscan 命令行，高危参数请谨慎使用。</p>
+          </div>
+          <div class="field">
+            <label for="label">本次任务备注</label>
+            <input id="label" type="text" maxlength="60" placeholder="例如 办公网段第一次探测">
+          </div>
+        </details>
+      </div>
+
+      <div class="config-foot">
+        <button class="cmd-peek" id="cmdPeek" title="查看完整命令">
+          <span class="cmd-peek-label">CMD</span>
+          <code id="cmdPeekText">等待配置…</code>
+          <svg class="icon"><use href="#i-external"/></svg>
+        </button>
+        <button class="btn btn-primary" id="btnStart">
+          <svg class="icon btn-icon"><use href="#i-play"/></svg>
+          <span id="btnStartLabel">开始扫描</span>
+          <kbd>Ctrl ↵</kbd>
+        </button>
+      </div>
+    </aside>
+
+    <section class="stage">
+      <div class="panel stats-strip">
+        <div class="stat">
+          <span class="stat-label">发现主机</span>
+          <strong id="statHosts">0</strong>
+          <small id="statHostsSub">distinct hosts</small>
+        </div>
+        <div class="stat">
+          <span class="stat-label">开放端口</span>
+          <strong id="statPorts">0</strong>
+          <small>open ports</small>
+        </div>
+        <div class="stat">
+          <span class="stat-label">服务识别</span>
+          <strong id="statServices">0</strong>
+          <small id="statWebSub">web 0</small>
+        </div>
+        <div class="stat stat-risk">
+          <span class="stat-label">风险与凭据</span>
+          <strong id="statVulns">0</strong>
+          <small>vulnerabilities</small>
+        </div>
+        <div class="stat stat-status">
+          <span class="stat-label">扫描状态</span>
+          <div class="stat-state"><span class="state-dot" id="statDot"></span><b id="statState">待命</b></div>
+          <small id="statElapsed">elapsed 00:00</small>
+        </div>
+      </div>
+
+      <div class="panel console-card">
+        <div class="panel-head console-head">
+          <div class="console-title">
+            <span class="live-dot" id="liveDot"></span>
+            <h2>实时输出</h2>
+            <span class="count" id="logCount">0 行</span>
+          </div>
+          <div class="console-actions">
+            <label class="mini-check"><input type="checkbox" id="autoScroll" checked><span>自动滚动</span></label>
+            <button class="text-btn" id="btnClearLog">清空</button>
+          </div>
+        </div>
+        <div class="console" id="console" role="log" aria-live="polite">
+          <div class="console-empty" id="consoleEmpty">
+            <svg class="icon"><use href="#i-terminal"/></svg>
+            <p>控制台待命</p>
+            <span>配置目标后按 <kbd>Ctrl</kbd> + <kbd>↵</kbd> 开始扫描，fscan 的输出会实时出现在这里。</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel results-card">
+        <div class="panel-head results-head">
+          <div class="results-title">
+            <h2>扫描结果</h2>
+            <span class="count" id="resultCount">0</span>
+          </div>
+          <div class="tabs" id="resultTabs" role="tablist">
+            <button class="tab is-active" data-filter="all">全部<span>0</span></button>
+            <button class="tab" data-filter="HOST">主机<span>0</span></button>
+            <button class="tab" data-filter="PORT">端口<span>0</span></button>
+            <button class="tab" data-filter="SERVICE">服务<span>0</span></button>
+            <button class="tab" data-filter="VULN">风险<span>0</span></button>
+          </div>
+          <div class="results-tools">
+            <label class="search">
+              <svg class="icon"><use href="#i-search"/></svg>
+              <input id="resultSearch" type="search" placeholder="搜索目标 / 服务 / 详情" spellcheck="false">
+            </label>
+            <button class="icon-btn sm" id="btnExportCsv" title="导出 CSV"><svg class="icon"><use href="#i-download"/></svg></button>
+            <button class="icon-btn sm" id="btnExportJson" title="导出 JSON"><svg class="icon"><use href="#i-braces"/></svg></button>
+          </div>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+          <table class="result-table">
+            <thead>
+              <tr><th class="col-type">类型</th><th class="col-target">目标</th><th class="col-port">端口</th><th class="col-service">服务 / 指纹</th><th class="col-detail">详情</th><th class="col-time">时间</th></tr>
+            </thead>
+            <tbody id="resultBody"></tbody>
+          </table>
+          <div class="empty" id="resultEmpty">
+            <div class="empty-mark"><svg class="icon"><use href="#i-target"/></svg></div>
+            <p>等待扫描结果</p>
+            <span>开放端口、服务指纹、弱口令与漏洞会按发现顺序汇总到这里。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="insight">
+      <div class="panel radar-card">
+        <div class="panel-head compact">
+          <div><span class="eyebrow">SITUATION</span><h3>扫描态势</h3></div>
+          <span class="micro" id="radarMode">IDLE</span>
+        </div>
+        <div class="radar" id="radar">
+          <svg class="radar-svg" viewBox="0 0 240 240" aria-hidden="true">
+            <defs>
+              <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#5AD8E6" stop-opacity=".12"/>
+                <stop offset="70%" stop-color="#5AD8E6" stop-opacity=".02"/>
+                <stop offset="100%" stop-color="#5AD8E6" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="120" cy="120" r="112" fill="url(#radarGlow)"/>
+            <circle cx="120" cy="120" r="112" class="ring"/>
+            <circle cx="120" cy="120" r="84" class="ring"/>
+            <circle cx="120" cy="120" r="56" class="ring"/>
+            <circle cx="120" cy="120" r="28" class="ring ring-faint"/>
+            <path d="M120 8v224M8 120h224" class="axis"/>
+            <path d="M120 8v10M120 222v10M8 120h10M222 120h10" class="axis-strong"/>
+            <g class="ticks" id="radarTicks"></g>
+          </svg>
+          <div class="radar-sweep" id="radarSweep"></div>
+          <div class="radar-blips" id="radarBlips"></div>
+          <div class="radar-center">
+            <span id="radarCount">0</span>
+            <small>HOSTS</small>
+          </div>
+        </div>
+        <div class="radar-legend">
+          <span><i class="dot dot-host"></i>主机</span>
+          <span><i class="dot dot-web"></i>Web</span>
+          <span><i class="dot dot-risk"></i>风险</span>
+          <span id="radarStatus" class="radar-status">等待扫描</span>
+        </div>
+      </div>
+
+      <div class="panel block-card">
+        <div class="block-head"><h3>发现主机</h3><span class="count" id="hostCount">0</span></div>
+        <div class="host-list" id="hostList">
+          <div class="empty-mini">尚未发现主机</div>
+        </div>
+      </div>
+
+      <div class="panel block-card">
+        <div class="block-head"><h3>风险提醒</h3><span class="risk-badge" id="riskCount">0</span></div>
+        <div class="risk-list" id="riskList">
+          <div class="empty-mini">暂无风险发现</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <section class="history-view" id="historyView" hidden>
+    <div class="history-head">
+      <div>
+        <span class="eyebrow">ARCHIVE</span>
+        <h1>扫描历史</h1>
+        <p>每次任务的配置、命令、控制台日志与结构化结果都保存在本机数据目录。</p>
+      </div>
+      <div class="history-head-actions">
+        <button class="btn btn-ghost" id="btnHistoryLive" hidden><span class="live-dot is-live"></span>扫描进行中 · 回到扫描台</button>
+        <button class="btn btn-ghost" id="btnOpenData"><svg class="icon"><use href="#i-folder"/></svg>打开数据目录</button>
+      </div>
+    </div>
+    <div class="history-grid" id="historyList"></div>
+    <div class="empty-history" id="historyEmpty">
+      <div class="empty-mark"><svg class="icon"><use href="#i-history"/></svg></div>
+      <p>还没有扫描记录</p>
+      <span>完成一次扫描后，结果会自动归档到这里。</span>
+    </div>
+  </section>
+
+  <footer class="statusbar">
+    <span class="statusbar-item"><i class="dot dot-live"></i><span id="footerState">服务就绪</span></span>
+    <span class="statusbar-sep"></span>
+    <span class="statusbar-item" id="footerFscan">fscan 检测中…</span>
+    <a class="statusbar-item statusbar-author" href="https://github.com/mcsiyue" target="_blank" rel="noreferrer" title="作者 四月 · GitHub">作者 四月</a>
+    <span class="statusbar-item statusbar-right">本地运行 · 数据不上传</span>
+  </footer>
+</div>
+
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><span class="eyebrow">SETTINGS</span><h2>设置</h2></div>
+      <button class="icon-btn" data-close="1" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="setFscan">fscan 路径</label>
+        <div class="row">
+          <input id="setFscan" type="text" spellcheck="false" placeholder="选择 fscan.exe 的完整路径">
+          <button class="btn btn-ghost sm" id="btnDetect">自动检测</button>
+        </div>
+        <p class="micro" id="fscanStatus">未检测</p>
+      </div>
+      <div class="field">
+        <label for="setOpenMode">界面打开方式</label>
+        <select id="setOpenMode">
+          <option value="app">独立应用窗口（Edge / Chrome）</option>
+          <option value="browser">系统默认浏览器</option>
+        </select>
+        <p class="micro">下次启动生效。</p>
+      </div>
+      <div class="field">
+        <label for="setDataDir">数据目录</label>
+        <div class="row">
+          <input id="setDataDir" type="text" readonly>
+          <button class="btn btn-ghost sm" id="btnOpenDataDir"><svg class="icon"><use href="#i-folder"/></svg>打开</button>
+        </div>
+      </div>
+      <div class="about-box">
+        <div><b>FSCAN 内网扫描台</b><span id="aboutVersion">v1.0.0</span></div>
+        <p>基于 <a href="https://github.com/shadow1ng/fscan" target="_blank" rel="noreferrer">shadow1ng/fscan</a> 的本地可视化控制台。扫描能力、指纹与 POC 均来自 fscan。</p>
+        <p>作者 <a href="https://github.com/mcsiyue" target="_blank" rel="noreferrer">四月</a> · <a href="https://github.com/mcsiyue" target="_blank" rel="noreferrer">github.com/mcsiyue</a></p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="text-btn danger" id="btnQuit">退出程序</button>
+      <div class="modal-foot-right">
+        <button class="btn btn-ghost" data-close="1">取消</button>
+        <button class="btn btn-primary" id="btnSaveSettings">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="commandModal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <div><span class="eyebrow">COMMAND</span><h2>将要执行的命令</h2></div>
+      <button class="icon-btn" data-close="1" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <pre class="cmd-block" id="cmdBlock"></pre>
+      <p class="micro">参数会以数组形式直接传给进程，不经过 shell 拼接。</p>
+    </div>
+    <div class="modal-foot">
+      <span></span>
+      <div class="modal-foot-right">
+        <button class="btn btn-ghost" id="btnCopyCmd"><svg class="icon"><use href="#i-copy"/></svg>复制</button>
+        <button class="btn btn-primary" data-close="1">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal history-modal" id="historyModal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="history-modal-card">
+    <div class="history-modal-head">
+      <div class="history-modal-title">
+        <span class="eyebrow">ARCHIVE / DETAIL</span>
+        <div class="hm-title-row">
+          <h2 id="hmTarget">历史任务</h2>
+          <span class="hm-readonly">只读预览</span>
+        </div>
+        <p id="hmMeta">读取中…</p>
+      </div>
+      <div class="history-modal-actions">
+        <div class="hm-tabs" id="hmTabs">
+          <button class="tab is-active" data-filter="all">全部<span>0</span></button>
+          <button class="tab" data-filter="HOST">主机<span>0</span></button>
+          <button class="tab" data-filter="PORT">端口<span>0</span></button>
+          <button class="tab" data-filter="SERVICE">服务<span>0</span></button>
+          <button class="tab" data-filter="VULN">风险<span>0</span></button>
+        </div>
+        <button class="btn btn-ghost sm" id="hmCsv"><svg class="icon"><use href="#i-download"/></svg>CSV</button>
+        <button class="btn btn-ghost sm" id="hmJson"><svg class="icon"><use href="#i-braces"/></svg>JSON</button>
+        <button class="btn btn-ghost sm" id="hmFolder"><svg class="icon"><use href="#i-folder"/></svg>目录</button>
+        <button class="icon-btn" data-close="1" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button>
+      </div>
+    </div>
+    <div class="history-modal-stats" id="hmStats"></div>
+    <div class="history-modal-body">
+      <div class="hm-panel hm-console-panel">
+        <div class="hm-subhead"><span>控制台日志</span><span id="hmLogCount">0 行</span></div>
+        <div class="console console--history" id="hmConsole"></div>
+      </div>
+      <div class="hm-panel hm-results-panel">
+        <div class="hm-subhead"><span>结构化结果</span><span id="hmResultCount">0</span></div>
+        <div class="table-wrap" id="hmTableWrap">
+          <table class="result-table">
+            <thead>
+              <tr><th class="col-type">类型</th><th class="col-target">目标</th><th class="col-port">端口</th><th class="col-service">服务 / 指纹</th><th class="col-detail">详情</th><th class="col-time">时间</th></tr>
+            </thead>
+            <tbody id="hmResultBody"></tbody>
+          </table>
+          <div class="empty" id="hmEmpty">
+            <div class="empty-mark"><svg class="icon"><use href="#i-target"/></svg></div>
+            <p>这条记录没有结果</p>
+            <span>可能扫描被提前停止，或目标没有发现。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<script src="app.js"></script>
+</body>
+</html>

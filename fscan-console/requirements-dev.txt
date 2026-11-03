@@ -1,0 +1,4 @@
+# Runtime dependencies: none (Python standard library only).
+# These are only needed to build the Windows executable and regenerate the icon.
+pyinstaller==6.20.0
+pillow>=10.0
